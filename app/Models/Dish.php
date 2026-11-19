@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Dish extends Model
 {
@@ -16,5 +17,10 @@ class Dish extends Model
         return [
             'is_bestseller' => 'boolean',
         ];
+    }
+
+    public function eatery(): BelongsTo
+    {
+        return $this->belongsTo(Eatery::class);
     }
 }
