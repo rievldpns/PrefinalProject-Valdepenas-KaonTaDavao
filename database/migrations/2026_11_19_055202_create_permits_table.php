@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('permits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('eatery_id')->constrained()->unique();
+            $table->foreignId('eatery_id')->unique()->constrained();
             $table->string('permit_no')->unique();
             $table->date('expires_on');
             $table->timestamps();
