@@ -94,7 +94,7 @@
         <h3 class="mb-4 font-serif text-lg font-semibold">Reviews</h3>
 
         @if ($eatery->is_open)
-            {{-- review form goes here in Phase 4 --}}
+           @include('eateries._review-form')
         @else
             <p class="mb-4 rounded-xl bg-sand px-4 py-3 text-sm">This eatery is closed. Reviews are paused.</p>
         @endif
