@@ -7,24 +7,25 @@
         $count = $eatery->reviews->count();
     @endphp
 
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex flex-wrap items-start justify-between gap-3">
+    {{-- header card --}}
+    <div class="mb-6 rounded-2xl border border-forest/10 bg-white p-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold">
+                <h2 class="font-serif text-3xl font-bold tracking-tight">
                     {{ $eatery->name }}
                     @unless ($eatery->is_open)
-                        <span class="text-xs bg-red-100 text-red-700 rounded px-2 py-1 align-middle">Closed</span>
+                        <span class="ml-2 rounded-full border border-terracotta/30 bg-terracotta/10 px-2.5 py-0.5 align-middle font-sans text-xs font-semibold text-terracotta">Closed</span>
                     @endunless
                 </h2>
-                <p class="text-sm mt-1">
-                    <a href="{{ route('districts.show', $eatery->district) }}" class="text-orange-600 hover:underline">{{ $eatery->district->name }}</a>
+                <p class="mt-1 text-sm text-forest/70">
+                    <a href="{{ route('districts.show', $eatery->district) }}" class="hover:text-forest hover:underline">{{ $eatery->district->name }}</a>
                     · {{ $eatery->address }}
                 </p>
-                <p class="text-sm text-gray-600">
-                    {{ $prices[$eatery->price_range] ?? $eatery->price_range }}
+                <p class="mt-1 text-sm">
+                    <span class="font-semibold text-terracotta">{{ $prices[$eatery->price_range] ?? $eatery->price_range }}</span>
                     @if ($eatery->specialty) · {{ $eatery->specialty }} @endif
                 </p>
-                <p class="text-sm mt-1">
+                <p class="mt-2 text-sm text-forest/70">
                     @if ($count > 0)
                         <x-rating :value="$avg" /> {{ number_format($avg, 1) }} ★ ({{ $count }} {{ $count === 1 ? 'review' : 'reviews' }})
                     @else
@@ -34,83 +35,89 @@
             </div>
 
             <div class="flex gap-2">
-                <a href="{{ route('eateries.edit', $eatery) }}" class="border rounded px-4 py-2 text-sm">Edit</a>
+                <a href="{{ route('eateries.edit', $eatery) }}"
+                   class="rounded-full border border-forest/30 px-5 py-2 text-sm font-semibold hover:bg-forest/5">Edit</a>
 
                 <form method="POST" action="{{ route('eateries.destroy', $eatery) }}">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="bg-red-600 text-white rounded px-4 py-2 text-sm">Delete</button>
+                    <button type="submit"
+                            class="rounded-full border border-red-300 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Delete</button>
                 </form>
             </div>
         </div>
 
-        <div class="flex flex-wrap gap-1 mt-3">
+        <div class="mt-4 flex flex-wrap gap-1.5">
             @foreach ($eatery->features as $feature)
                 <a href="{{ route('eateries.index', ['feature' => $feature->name]) }}"
-                   class="text-xs bg-orange-100 text-orange-800 rounded px-2 py-1 hover:bg-orange-200">{{ $feature->name }}</a>
+                   class="rounded-full bg-sage/20 px-2.5 py-0.5 text-xs font-medium text-forest hover:bg-sage/35">{{ $feature->name }}</a>
             @endforeach
         </div>
     </div>
 
-    {{-- permit box --}}
-    @if ($eatery->permit)
-        <div class="bg-white rounded-lg shadow p-4 mb-6">
-            <h3 class="font-bold mb-1">Business Permit</h3>
-            <p class="text-sm">Permit no.: {{ $eatery->permit->permit_no }}</p>
-            <p class="text-sm">Expires: {{ $eatery->permit->expires_on->format('M d, Y') }}</p>
-            @if ($eatery->permit->expires_on->lt(today()))
-                <p class="text-sm font-bold text-red-600">Permit expired</p>
+    <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {{-- permit box --}}
+        <div class="rounded-2xl bg-sand p-5">
+            <h3 class="mb-3 font-serif text-lg font-semibold">Business Permit</h3>
+            @if ($eatery->permit)
+                <p class="text-sm text-forest/60">Permit no.</p>
+                <p class="font-mono text-sm font-medium">{{ $eatery->permit->permit_no }}</p>
+                <p class="mt-3 text-sm text-forest/60">Expires</p>
+                <p class="text-sm">{{ $eatery->permit->expires_on->format('M d, Y') }}</p>
+                @if ($eatery->permit->expires_on->lt(today()))
+                    <p class="mt-3 text-sm font-bold text-red-600">Permit expired</p>
+                @endif
             @endif
         </div>
-    @endif
 
-    {{-- dishes --}}
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <h3 class="font-bold mb-2">Dishes</h3>
-        <ul class="divide-y">
-            @foreach ($eatery->dishes as $dish)
-                <li class="py-2 flex justify-between text-sm">
-                    <span>
-                        {{ $dish->name }}
-                        @if ($dish->is_bestseller)
-                            <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-1">Bestseller</span>
-                        @endif
-                    </span>
-                    <span>₱{{ number_format($dish->price, 2) }}</span>
-                </li>
-            @endforeach
-        </ul>
+        {{-- dishes --}}
+        <div class="rounded-2xl border border-forest/10 bg-white p-5">
+            <h3 class="mb-3 font-serif text-lg font-semibold">Dishes</h3>
+            <ul class="divide-y divide-forest/10">
+                @foreach ($eatery->dishes as $dish)
+                    <li class="flex items-center justify-between gap-3 py-2 text-sm">
+                        <span>
+                            {{ $dish->name }}
+                            @if ($dish->is_bestseller)
+                                <span class="ml-1 rounded-full bg-lime px-2 py-0.5 text-xs font-semibold text-forest">Bestseller</span>
+                            @endif
+                        </span>
+                        <span class="font-semibold text-terracotta">₱{{ number_format($dish->price, 2) }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
     </div>
 
     {{-- reviews --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="font-bold mb-3">Reviews</h3>
+    <div class="rounded-2xl border border-forest/10 bg-white p-5">
+        <h3 class="mb-4 font-serif text-lg font-semibold">Reviews</h3>
 
         @if ($eatery->is_open)
             {{-- review form goes here in Phase 4 --}}
         @else
-            <p class="mb-4 text-gray-600">This eatery is closed. Reviews are paused.</p>
+            <p class="mb-4 rounded-xl bg-sand px-4 py-3 text-sm">This eatery is closed. Reviews are paused.</p>
         @endif
 
         @forelse ($eatery->reviews as $review)
-            <div class="border-t py-3">
-                <div class="flex justify-between items-start">
+            <div class="border-t border-forest/10 py-4">
+                <div class="flex items-start justify-between gap-3">
                     <div class="text-sm">
-                        <a href="{{ route('reviewers.show', $review->user) }}" class="font-bold text-orange-600 hover:underline">{{ $review->user->name }}</a>
+                        <a href="{{ route('reviewers.show', $review->user) }}" class="font-semibold hover:underline">{{ $review->user->name }}</a>
                         · <x-rating :value="$review->rating" />
-                        · <span class="text-gray-500">{{ $review->created_at->format('M d, Y') }}</span>
+                        · <span class="text-forest/60">{{ $review->created_at->format('M d, Y') }}</span>
                     </div>
 
                     <form method="POST" action="{{ route('reviews.destroy', $review) }}">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-xs text-red-600 hover:underline">Delete</button>
+                        <button type="submit" class="text-xs text-forest/40 hover:text-red-600">Delete</button>
                     </form>
                 </div>
-                <p class="text-sm mt-1">{{ $review->body }}</p>
+                <p class="mt-1 text-sm">{{ $review->body }}</p>
             </div>
         @empty
-            <p class="text-sm text-gray-600">No reviews yet.</p>
+            <p class="text-sm text-forest/60">No reviews yet.</p>
         @endforelse
     </div>
 @endsection

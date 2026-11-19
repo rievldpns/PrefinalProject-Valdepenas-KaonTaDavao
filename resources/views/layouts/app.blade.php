@@ -7,26 +7,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $siteTitle }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500..700&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-orange-50 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-cream text-forest antialiased min-h-screen flex flex-col selection:bg-lime selection:text-forest">
 
-    <header class="bg-orange-600 text-white">
-        <div class="max-w-6xl mx-auto px-4 py-4">
-            <a href="{{ route('home') }}" class="text-xl font-bold">{{ $siteTitle }}</a>
+    <header class="sticky top-0 z-10 border-b border-forest/10 bg-cream/90 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:h-16 sm:py-0">
+            <a href="{{ route('home') }}" class="font-serif text-lg font-semibold tracking-tight">{{ $siteTitle }}</a>
+
+            @include('partials.nav')
         </div>
     </header>
 
-    @include('partials.nav')
-
-    <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1">
+    <main class="max-w-6xl mx-auto px-4 py-10 w-full flex-1">
         @include('partials.flash')
 
         @yield('content')
     </main>
 
-    <footer class="text-center text-sm text-gray-500 py-4">
-        Kaon Ta! Davao
+    <footer class="border-t border-forest/10">
+        <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-forest/60">
+            Kaon Ta! Davao
+        </div>
     </footer>
 
 </body>
